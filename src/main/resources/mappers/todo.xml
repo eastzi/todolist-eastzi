@@ -18,18 +18,26 @@
 		)
 	</insert>
 
-	<select id="getTodoListOfIndex" parameterType="Integer" resultType="com.eastzi.todolist.domain.todo.Todo">
+	<select id="getTodoListOfIndex" parameterType="hashmap" resultType="com.eastzi.todolist.domain.todo.Todo">
 		select
-			todo_code,
-			todo_content,
-			todo_complete,
-			importance_flag,
-			create_date,
-			update_date
+			tm.todo_code,
+			
+			tm.todo_content,
+			tm.todo_complete,
+			tm.importance_flag,
+			
+			tt.total_count,
+			
+			tm.create_date,
+			tm.update_date
 		from
-			todo_mst
+			todo_mst tm
+			LEFT OUTER JOIN(SELECT
+								COUNT(*) AS total_count
+							FROM
+								todo_mst) tt ON (1 = 1)
 		order by
 			todo_code desc
-		limit #{index}, 20
+		limit #{index}, #{count}
 	</select>
 </mapper>

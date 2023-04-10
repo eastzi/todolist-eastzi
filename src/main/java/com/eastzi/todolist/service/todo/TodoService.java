@@ -15,5 +15,5 @@ public interface TodoService {
 	//삭제
 	
 	//조회
-	public List<TodoListRespDto> getTodoList(int page) throws Exception;
+	public List<TodoListRespDto> getTodoList(int page, int contentCount) throws Exception;
 }

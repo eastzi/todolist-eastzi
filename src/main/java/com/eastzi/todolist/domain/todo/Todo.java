@@ -18,6 +18,7 @@ public class Todo {
 	private String todo_content;
 	private int todo_complete;
 	private int importance_flag;
+	private int total_count;
 	private LocalDateTime create_date;
 	private LocalDateTime update_date;
 	
@@ -27,6 +28,7 @@ public class Todo {
 				.todo(todo_content)
 				.todoComplete(todo_complete)
 				.importance(importance_flag == 1)
+				.totalCount(total_count)
 				.createDate(create_date)
 				.updateDate(update_date)
 				.build();
