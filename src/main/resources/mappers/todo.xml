@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eastzi.todolist.domain.todo.TodoRepository">
+
+	<insert id="save" parameterType="com.eastzi.todolist.domain.todo.Todo">
+		insert into
+			todo_mst
+		values(
+			0,
+			#{todo_content},
+			0,
+			#{importance_flag},
+			now(),
+			now()
+		)
+	</insert>
+
+	<select id="getTodoListOfIndex" parameterType="Integer" resultType="com.eastzi.todolist.domain.todo.Todo">
+		select
+			todo_code,
+			todo_content,
+			todo_complete,
+			importance_flag,
+			create_date,
+			update_date
+		from
+			todo_mst
+		order by
+			todo_code desc
+		limit #{index}, 20
+	</select>
+</mapper>
