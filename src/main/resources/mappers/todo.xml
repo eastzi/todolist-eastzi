@@ -40,4 +40,67 @@
 			todo_code desc
 		limit #{index}, #{count}
 	</select>
+	
+	<select id="getImportanceTodoList" parameterType="hashmap" resultType="com.eastzi.todolist.domain.todo.Todo">
+		select
+			tm.todo_code,
+			
+			tm.todo_content,
+			tm.todo_complete,
+			tm.importance_flag,
+			
+			tt.total_count,
+			
+			tm.create_date,
+			tm.update_date
+		from
+			todo_mst tm
+			LEFT OUTER JOIN(SELECT
+								COUNT(*) AS total_count
+							FROM
+								todo_mst
+							WHERE
+								importance_flag = 1) tt ON (1 = 1)
+		where
+			importance_flag = 1
+		order by
+			todo_code desc
+		limit #{index}, #{count}
+	</select>
+	
+	<update id="updateTodoComplete" parameterType="Integer">
+		update
+			todo_mst
+		set
+			todo_complete = case when todo_complete = '0' then 1 else 0 end
+		where
+			todo_code = #{todo_code}
+	</update>
+	
+	<update id="updateTodoImportance" parameterType="Integer">
+		update
+			todo_mst
+		set
+			importance_flag = case when importance_flag = '0' then 1 else 0 end
+		where
+			todo_code = #{todo_code}
+	</update>
+	
+	<update id="updateTodoByTodoCode" parameterType="com.eastzi.todolist.domain.todo.Todo">
+		update
+			todo_mst
+		set
+			todo_content = #{todo_content}, 
+			update_date = now()
+		where
+			todo_code = #{todo_code}
+	</update>
+	
+	<delete id="remove" parameterType="Integer">
+		delete
+		from
+			todo_mst
+		where
+			todo_code = #{todo_code}
+	</delete>
 </mapper>
