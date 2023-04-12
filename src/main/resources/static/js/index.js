@@ -9,24 +9,24 @@ let page = 1;
 let totalPage = 0;
 let listType = "all";
 
-
-
-
-
 load();
 
+//total todolist page calculate
 function setTotalPage(totalCount){
 	totalPage = totalCount % 20 == 0 ? totalCount / 20 : Math.floor(totalCount / 20) + 1;
 }
 
+//incomplete todolist count
 function setIncompleteCount(incompleteCount) {
 	incompleteCountNumber.textContent = incompleteCount;
 }
 
+//add todolist to html
 function appendList(listContent) {
 	todoContentList.innerHTML += listContent
 }
 
+//updateStatus(remove)
 function updateCheckStatus(type, todoContent, todoCode) {
     let result = updateStatus(type, todoCode);
     
@@ -36,6 +36,7 @@ function updateCheckStatus(type, todoContent, todoCode) {
     }
 }
 
+//complete event - change count / remove
 function addCompleteEvent(todoContent, todoCode) {
 	const completeCheck = todoContent.querySelector(".complete-check");
 	
@@ -51,6 +52,7 @@ function addCompleteEvent(todoContent, todoCode) {
 	}
 }
 
+//importance event - change(remove)
 function addImportanceEvent(todoContent, todoCode) {
 	const importanceCheck = todoContent.querySelector(".importance-check");
 	
@@ -59,6 +61,7 @@ function addImportanceEvent(todoContent, todoCode) {
 	}
 }
 
+//delete event - click(remove)
 function addDeleteEvent(todoContent, todoCode) {
 	const trashButton = todoContent.querySelector(".trash-button");
 	
@@ -67,6 +70,7 @@ function addDeleteEvent(todoContent, todoCode) {
 	}
 }
 
+//update todolist content(old -> new)
 function addContentInputEvent(todoContent, todoCode) {
 	const todoContentText = todoContent.querySelector(".todo-content-text");
 	const todoContentInput = todoContent.querySelector(".todo-content-input");
@@ -86,13 +90,15 @@ function addContentInputEvent(todoContent, todoCode) {
 	}
 	
 	todoContentText.onclick = () => {
-		todoContentValue = todoContentInput.value;
+		todoContentOldValue = todoContentInput.value;
 		todoContentText.classList.toggle("visible");
 		todoContentInput.classList.toggle("visible");
 		todoContentInput.focus();
+        //onblur trigger
 		eventFlag = true;
 	}
 	
+    //focus out
 	todoContentInput.onblur = () => {
 		if(eventFlag){
 			updateTodo();
@@ -107,10 +113,12 @@ function addContentInputEvent(todoContent, todoCode) {
 	}
 }
 
+//confirm value change
 function getChangeStatusOfValue(originValue, newValue) {
 	return originValue != newValue;
 }
 
+//extract complete todoCode 
 function substringTodoCode(todoContent) {
 	const completeCheck = todoContent.querySelector(".complete-check");
 	
@@ -120,6 +128,7 @@ function substringTodoCode(todoContent) {
 	return todoCode.substring(tokenIndex + 1);
 }
 
+//add event to content
 function addEvent() {
 	const todoContents = document.querySelectorAll(".todo-content");
 	
@@ -133,6 +142,7 @@ function addEvent() {
 	}
 }
 
+//create new todolist
 function createList(data) {
     for(let content of data) {
         console.log(content.todoCode);
@@ -153,6 +163,7 @@ function createList(data) {
     addEvent();
 }
 
+//page scroll
 sectionBody.onscroll = () => {
     console.log("sectionBody: " + sectionBody.offsetHeight);
     console.log("scrollTop: " + sectionBody.scrollTop);
@@ -189,6 +200,7 @@ function clearTodoContentList() {
 	todoContentList.innerHTML = "";
 }
 
+//type-select-box-list li(status) click event 
 for(let i = 0; i < typeSelectBoxListLis.length; i++){
 	
 	typeSelectBoxListLis[i].onclick = () => {
