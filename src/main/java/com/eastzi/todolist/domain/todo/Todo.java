@@ -33,6 +33,6 @@ public class Todo {
 				.incompleteCount(incomplete_count)
 				.createDate(create_date)
 				.updateDate(update_date)
-				.build();
+				.build();	
 	}
 }
