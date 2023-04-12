@@ -45,17 +45,19 @@ public class TodoController {
 	
 	@PostMapping("/todo")
 	public ResponseEntity<?> addTodo(@RequestBody CreateTodoReqDto createTodoReqDto) {
+		boolean status = false;
 		
 		try {
-			if(!todoService.createTodo(createTodoReqDto)) {
+			status = todoService.createTodo(createTodoReqDto);
+			if(!status) {
 				throw new RuntimeException();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "add failed", createTodoReqDto));
+			return ResponseEntity.internalServerError().body(new CMRespDto<>(-1, "add failed", status));
 		}
 		
-		return ResponseEntity.ok().body(new CMRespDto<>(1, "add success", createTodoReqDto));
+		return ResponseEntity.ok().body(new CMRespDto<>(1, "add success", status));
 	}
 	
 	@PutMapping("/complete/todo/{todoCode}")
