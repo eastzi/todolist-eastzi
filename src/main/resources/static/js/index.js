@@ -3,6 +3,7 @@ const typeSelectBoxList = document.querySelector(".type-select-box-list");
 const typeSelectBoxListLis = typeSelectBoxList.querySelectorAll("li");
 const todoContentList = document.querySelector(".todo-content-list");
 const sectionBody = document.querySelector(".section-body");
+const incompleteCountNumber = document.querySelector(".incomplete-count-number");
 
 let page = 1;
 let totalPage = 0;
@@ -99,22 +100,64 @@ function getList(data) {
 }
 
 function addEvent() {
-    const todoContentList = document.querySelectorAll(".todo-content");
+    const todoContents = document.querySelectorAll(".todo-content");
 
-    for(let i = 0; i < todoContentList.length; i++) {
-        let todoCode = todoContentList[i].querySelector(".complete-check").getAttribute("id");
+    for(let i = 0; i < todoContents.length; i++) {
+        let todoCode = todoContents[i].querySelector(".complete-check").getAttribute("id");
         let index = todoCode.lastIndexOf("-");
         todoCode = todoCode.substring(index + 1);
         console.log("todoCode: " + todoCode);
 
-        todoContentList[i].querySelector(".complete-check").onchange = () => {
-            updateStatus("complete", todoCode)
-        }
-        todoContentList[i].querySelector(".importance-check").onchange = () => {
+        todoContents[i].querySelector(".complete-check").onchange = () => {
+            let incompleteCount = parseInt(incompleteCountNumber.textContent);
 
+            if(todoContents[i].querySelector(".complete-check").checked){
+				incompleteCountNumber.textContent = incompleteCount - 1;
+			}else{
+				incompleteCountNumber.textContent = incompleteCount + 1;
+			}
         }
-        todoContentList[i].querySelector(".trash-button").onclick = () => {
+        todoContents[i].querySelector(".importance-check").onchange = () => {
+            updateCheckStatus("importance", todoContents[i], todoCode);
+        }
+        todoContents[i].querySelector(".trash-button").onclick = () => {
+            deleteTodo(todoContents[i], todoCode);
+        }
 
+        const todoContentText = todoContents[i].querySelector(".todo-content-text");
+        const todoContentInput = todoContents[i].querySelector(".todo-content-input");
+        let todoContentValue = null;
+
+        let eventFlag = false;
+
+        let updateTodoContent = () => {
+            if(todoContentValue != todoContentInput.value) {
+                alert("수정요청");
+            }
+            todoContentText.classList.toggle("visible");
+            todoContentInput.classList.toggle("visible");
+        }
+
+        todoContentText.onclick = () => {
+            todoContentValue = todoContentInput.value;
+            todoContentText.classList.toggle("visible");
+            todoContentInput.classList.toggle("visible");
+            todoContentInput.focus();
+            eventFlag = true;
+        }
+
+        todoContentInput.onblur = () => {
+            if(eventFlag) {
+                updateTodoContent();
+            }
+        }
+
+        todoContentInput.onkeyup = () => {
+            if(window.Event.keyCode == 13) {
+                eventFlag = false;
+                updateTodoContent();
+            }
+            
         }
     }
 }
@@ -137,16 +180,28 @@ function updateStatus(type, todoCode) {
     return result;
 }
 
-function updateComplete(todoContent) {
-
+function updateCheckStatus(type, todoContent, todoCode) {
+    let result = updateStatus(type, todoCode);
+    
+    if(((type == "comlete" && (listType == "complete" || listType == "incomplete"))
+        || (type == "importance" && listType == "importance")) && result) {
+        todoContentList.removeChild(todoContent);
+    }
 }
 
-function updateImportance(todoContent) {
-
-}
-
-function deleteTodo(todoContent) {
-
+function deleteTodo(todoContent, todoCode) {
+    $.ajax({
+        async: false,
+        type: "delete",
+        url: `/api/v1/todolist/todo/${todoCode}`,
+        dataType: "json",
+        success: (response) => {
+            if(response.data) {
+                todoContentList.removeChild(todoContent);
+            }
+        },
+        error: errorMessage
+    })
 }
 
 function errorMessage(request, status, error) {
